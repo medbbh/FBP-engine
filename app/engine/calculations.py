@@ -18,11 +18,18 @@ def compute_quantity_subtotal(lines: list[QuantityLine]) -> Decimal:
 
 
 def compute_quality_score(lines: list[QualityLine]) -> Decimal:
-    """Returns weighted score in [0.0, 1.0]: aggregate score_obtained / max_score."""
+    """Returns weighted score in [0.0, 1.0]: aggregate score_obtained / max_score.
+
+    score_obtained is clamped to max_score per item to prevent data-entry errors
+    from producing a score above 1.
+    """
     total_max = sum((_d(line.max_score) for line in lines), Decimal("0"))
     if total_max == Decimal("0"):
         return Decimal("0")
-    total_obtained = sum((_d(line.score_obtained) for line in lines), Decimal("0"))
+    total_obtained = sum(
+        (min(_d(line.score_obtained), _d(line.max_score)) for line in lines),
+        Decimal("0"),
+    )
     return _d(total_obtained / total_max)
 
 
