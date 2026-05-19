@@ -1,6 +1,7 @@
 import enum
 from datetime import datetime
 
+import sqlalchemy as sa
 from sqlalchemy import DateTime, Enum, ForeignKey, Integer, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -17,6 +18,9 @@ class DeclarationStatus(str, enum.Enum):
 
 class QuarterlyDeclaration(Base):
     __tablename__ = "quarterly_declarations"
+    __table_args__ = (
+        sa.UniqueConstraint("facility_id", "year", "quarter", name="uq_declaration_facility_year_quarter"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     facility_id: Mapped[int] = mapped_column(ForeignKey("health_facilities.id"), nullable=False)

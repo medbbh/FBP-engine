@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+import sqlalchemy as sa
 from sqlalchemy import ForeignKey, Numeric, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -8,6 +9,9 @@ from app.core.database import Base
 
 class QualityEvaluation(Base):
     __tablename__ = "quality_evaluations"
+    __table_args__ = (
+        sa.UniqueConstraint("declaration_id", "item_id", name="uq_evaluation_declaration_item"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     declaration_id: Mapped[int] = mapped_column(
