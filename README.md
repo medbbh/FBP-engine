@@ -13,7 +13,7 @@
 
 ### Présentation
 
-Ce module est un moteur de calcul **FBP/PBF** (Financement Basé sur la Performance) open-source pour les systèmes de santé, aligné sur les standards du **World Bank PBF Toolkit** (Fritsche, Soeters, Meessen 2014) et utilisé au Rwanda, Burundi, Burkina Faso. Il est conçu pour le programme **INAYA** en Mauritanie.
+Ce module est un moteur de calcul **FBP/PBF** (Financement Basé sur la Performance) open-source pour les systèmes de santé, aligné sur les standards du **World Bank PBF Toolkit** (Fritsche, Soeters, Meessen 2014) et utilisé au Rwanda, Burundi, Burkina Faso. Il est conçu pour le système national de santé en Mauritanie.
 
 ### Formule de paiement
 
@@ -53,7 +53,7 @@ API disponible sur `http://localhost:8000/docs` (Swagger interactif).
 
 ### Overview
 
-A standalone, open-source **PBF/FBP (Performance-Based Financing)** calculation engine for health facilities. Implements the World Bank PBF Toolkit standards used in Rwanda, Burundi, Burkina Faso, and now Mauritania (INAYA programme).
+A standalone, open-source **PBF/FBP (Performance-Based Financing)** calculation engine for health facilities. Implements the World Bank PBF Toolkit standards used in Rwanda, Burundi, Burkina Faso, and designed for use in Mauritania's national healthcare system.
 
 ### Payment Formula
 

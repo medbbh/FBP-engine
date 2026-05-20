@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="FBP Engine — Performance-Based Financing",
-    description="Moteur de calcul FBP/PBF pour systèmes de santé (Mauritanie / INAYA)",
+    description="Moteur de calcul FBP/PBF pour systèmes de santé en Mauritanie",
     version="0.1.0",
     lifespan=lifespan,
 )

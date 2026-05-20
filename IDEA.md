@@ -56,7 +56,7 @@ C'est le modèle **"carrot-and-stick"** : la qualité est un multiplicateur déf
 ### Pays de référence
 
 Rwanda (le pionnier, modèle de référence), Burundi, Burkina Faso, RDC, Cameroun.
-La **Mauritanie** démarre maintenant via **INAYA**.
+La **Mauritanie** démarre maintenant via son système national de santé.
 
 ---
 
@@ -249,4 +249,4 @@ Use the Rwanda PBF indicator list as inspiration (publicly documented in their P
 **Conventional commits:** `feat:`, `fix:`, `docs:`
 **Branches:** `main`, `dev`, `feature/*`
 
-> Matches exactly what the INAYA TDR demands: *"Règles de commit: messages conventionnels"*
+> Conventional commit format aligned with standard healthcare project requirements.

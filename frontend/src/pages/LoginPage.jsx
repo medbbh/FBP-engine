@@ -65,7 +65,7 @@ export default function LoginPage() {
         </form>
 
         <p style={{ textAlign: 'center', marginTop: 20, fontSize: 12, color: 'var(--gray-400)' }}>
-          Accès réservé — programme INAYA
+          Accès réservé — système de santé mauritanien
         </p>
       </div>
     </div>

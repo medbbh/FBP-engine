@@ -58,7 +58,7 @@ async def _seed_default_ruleset(session: AsyncSession) -> None:
     if existing.scalar_one_or_none() is None:
         session.add(RuleSet(
             name="Mauritanie Standard 2024",
-            description="Règles FBP standard Mauritanie — programme INAYA 2024",
+            description="Règles FBP standard Mauritanie — système de santé national 2024",
             quality_threshold="0.50",
             quality_multiplier_mode="deflator",
             abatement_brackets=[
