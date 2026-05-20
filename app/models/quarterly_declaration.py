@@ -2,7 +2,7 @@ import enum
 from datetime import datetime
 
 import sqlalchemy as sa
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, func
+from sqlalchemy import DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -26,14 +26,7 @@ class QuarterlyDeclaration(Base):
     facility_id: Mapped[int] = mapped_column(ForeignKey("health_facilities.id"), nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
     quarter: Mapped[int] = mapped_column(Integer, nullable=False)
-    status: Mapped[str] = mapped_column(
-        Enum(
-            "draft", "declared", "verified", "paid", "rejected",
-            name="declaration_status",
-        ),
-        nullable=False,
-        default="draft",
-    )
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="draft")
     submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(

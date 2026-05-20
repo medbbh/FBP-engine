@@ -7,6 +7,7 @@ from app.schemas.audit import AnomalyFlag, AnomalyResult, RiskScore
 _Z_THRESHOLD = 2.5
 _JUMP_THRESHOLD = Decimal("0.50")
 _QUALITY_DROP_THRESHOLD = Decimal("0.20")
+_FRAUD_DISCREPANCY_THRESHOLD = Decimal("0.10")
 
 
 def detect_anomalies(
@@ -15,6 +16,7 @@ def detect_anomalies(
     peer_quantities: list[dict[str, Decimal]],
     current_quality_score: Decimal,
     historical_quality_scores: list[Decimal],
+    discrepancy_rates: dict[str, Decimal] | None = None,
 ) -> AnomalyResult:
     """
     Statistical anomaly detection for a single quarterly declaration.
@@ -27,6 +29,7 @@ def detect_anomalies(
     """
     flags: list[AnomalyFlag] = []
 
+    flags.extend(_check_discrepancy_rates(discrepancy_rates or {}))
     flags.extend(_check_own_history_zscore(current_quantities, historical_quantities))
     flags.extend(_check_peer_zscore(current_quantities, peer_quantities))
     flags.extend(_check_sudden_jump(current_quantities, historical_quantities))
@@ -41,6 +44,18 @@ def detect_anomalies(
         risk = RiskScore.HIGH
 
     return AnomalyResult(risk_score=risk, flags=flags, total_flags=total)
+
+
+def _check_discrepancy_rates(discrepancy_rates: dict[str, Decimal]) -> list[AnomalyFlag]:
+    flags = []
+    for code, rate in discrepancy_rates.items():
+        if rate > _FRAUD_DISCREPANCY_THRESHOLD:
+            flags.append(AnomalyFlag(
+                rule="discrepancy_fraud",
+                indicator=code,
+                details=f"Declared vs verified discrepancy {rate:.2%} exceeds {_FRAUD_DISCREPANCY_THRESHOLD:.0%} fraud threshold",
+            ))
+    return flags
 
 
 def _check_own_history_zscore(

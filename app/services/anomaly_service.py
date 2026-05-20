@@ -21,6 +21,7 @@ async def run(session: AsyncSession, declaration_id: int) -> AnomalyResult:
 
     current_quantities = await _get_quantities(session, declaration_id)
     current_quality = await _get_quality_score(session, declaration_id)
+    discrepancy_rates = await _get_discrepancy_rates(session, declaration_id)
 
     historical_qtys, historical_scores = await _get_facility_history(
         session, declaration.facility_id, declaration.year, declaration.quarter
@@ -35,7 +36,18 @@ async def run(session: AsyncSession, declaration_id: int) -> AnomalyResult:
         peer_quantities=peer_qtys,
         current_quality_score=current_quality,
         historical_quality_scores=historical_scores,
+        discrepancy_rates=discrepancy_rates,
     )
+
+
+async def _get_discrepancy_rates(session: AsyncSession, declaration_id: int) -> dict[str, Decimal]:
+    from app.models.quantity_indicator import QuantityIndicator
+    result = await session.execute(
+        select(QuantityDeclaration, QuantityIndicator)
+        .join(QuantityIndicator, QuantityDeclaration.indicator_id == QuantityIndicator.id)
+        .where(QuantityDeclaration.declaration_id == declaration_id)
+    )
+    return {ind.code: qty.discrepancy_rate for qty, ind in result.all()}
 
 
 async def _get_quantities(session: AsyncSession, declaration_id: int) -> dict[str, Decimal]:

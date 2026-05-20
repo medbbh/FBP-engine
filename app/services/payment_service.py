@@ -36,9 +36,7 @@ async def compute_and_persist(session: AsyncSession, declaration_id: int) -> Pay
 
     declaration_date = date(declaration.year, declaration.quarter * 3, 1)
     rules = await get_active_ruleset(session, declaration_date)
-    facility = await session.get(type(declaration.facility if hasattr(declaration, "facility") else object), declaration.facility_id)
 
-    # Load facility equity coefficient
     from app.models.health_facility import HealthFacility
     fac_result = await session.execute(
         select(HealthFacility).where(HealthFacility.id == declaration.facility_id)

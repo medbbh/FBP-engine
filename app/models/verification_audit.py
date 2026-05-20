@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import Boolean, Enum, ForeignKey, Integer, Text, DateTime, func
+from sqlalchemy import Boolean, ForeignKey, Integer, String, Text, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -20,10 +20,7 @@ class VerificationAudit(Base):
     declaration_id: Mapped[int] = mapped_column(
         ForeignKey("quarterly_declarations.id"), nullable=False
     )
-    audit_type: Mapped[str] = mapped_column(
-        Enum("community", "counter_verification", "risk_based", name="audit_type"),
-        nullable=False,
-    )
+    audit_type: Mapped[str] = mapped_column(String(30), nullable=False)
     patients_sampled: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     patients_confirmed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     anomaly_flag: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)

@@ -6,7 +6,7 @@ from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.config import settings
-from app.core.database import Base
+from app.core.database import Base, build_engine_kwargs
 
 # import all models so Base.metadata is populated
 import app.models  # noqa: F401
@@ -41,7 +41,8 @@ def do_run_migrations(connection):
 
 
 async def run_migrations_online() -> None:
-    connectable = create_async_engine(get_url())
+    clean_url, connect_args = build_engine_kwargs(get_url())
+    connectable = create_async_engine(clean_url, connect_args=connect_args)
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
     await connectable.dispose()

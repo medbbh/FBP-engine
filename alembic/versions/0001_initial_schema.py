@@ -77,19 +77,17 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
     )
 
-    declaration_status = sa.Enum(
-        "draft", "declared", "verified", "paid", "rejected",
-        name="declaration_status",
-    )
-    declaration_status.create(op.get_bind())
-
     op.create_table(
         "quarterly_declarations",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("facility_id", sa.Integer(), sa.ForeignKey("health_facilities.id"), nullable=False),
         sa.Column("year", sa.Integer(), nullable=False),
         sa.Column("quarter", sa.Integer(), nullable=False),
-        sa.Column("status", declaration_status, nullable=False, server_default="draft"),
+        sa.Column("status", sa.String(20), nullable=False, server_default="draft"),
+        sa.CheckConstraint(
+            "status IN ('draft','declared','verified','paid','rejected')",
+            name="ck_quarterly_declaration_status",
+        ),
         sa.Column("submitted_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("verified_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
@@ -131,17 +129,15 @@ def upgrade() -> None:
         sa.Column("computed_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
     )
 
-    audit_type = sa.Enum(
-        "community", "counter_verification", "risk_based",
-        name="audit_type",
-    )
-    audit_type.create(op.get_bind())
-
     op.create_table(
         "verification_audits",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("declaration_id", sa.Integer(), sa.ForeignKey("quarterly_declarations.id"), nullable=False),
-        sa.Column("audit_type", audit_type, nullable=False),
+        sa.Column("audit_type", sa.String(30), nullable=False),
+        sa.CheckConstraint(
+            "audit_type IN ('community','counter_verification','risk_based')",
+            name="ck_verification_audit_type",
+        ),
         sa.Column("patients_sampled", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("patients_confirmed", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("anomaly_flag", sa.Boolean(), nullable=False, server_default="false"),
@@ -152,12 +148,10 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table("verification_audits")
-    sa.Enum(name="audit_type").drop(op.get_bind())
     op.drop_table("payments")
     op.drop_table("quality_evaluations")
     op.drop_table("quantity_declarations")
     op.drop_table("quarterly_declarations")
-    sa.Enum(name="declaration_status").drop(op.get_bind())
     op.drop_table("users")
     op.drop_table("rule_sets")
     op.drop_table("quality_checklist_items")

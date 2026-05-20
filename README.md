@@ -86,6 +86,18 @@ cp .env.example .env
 make up && make migrate && make seed && make test
 ```
 
+### Demo Credentials
+
+The seed script creates a default admin account:
+
+| Field    | Value          |
+|----------|----------------|
+| Email    | `admin@fbp.mr` |
+| Password | `Admin1234!`   |
+| Role     | `admin`        |
+
+Frontend: `http://localhost:3000` — Backend Swagger: `http://localhost:8000/docs`
+
 ### API Endpoints
 
 | Method | Path | Description |
