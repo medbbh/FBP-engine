@@ -19,12 +19,14 @@ class Settings(BaseSettings):
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:8000"]
 
     def get_database_url(self) -> str:
-        if self.DATABASE_URL:
-            return self.DATABASE_URL
-        return (
+        url = self.DATABASE_URL or (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
             f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
+        # Render (and similar) provide postgresql:// — asyncpg requires the +asyncpg driver
+        if url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return url
 
 
 settings = Settings()
