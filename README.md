@@ -3,6 +3,9 @@
 [![Tests](https://img.shields.io/badge/tests-41%20passed-green)](tests/)
 [![Python](https://img.shields.io/badge/python-3.11-blue)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://fbp-engine.onrender.com)
+
+**Live demo: https://fbp-engine.onrender.com**
 
 ---
 
