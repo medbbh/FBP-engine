@@ -1,12 +1,10 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.dependencies import require_role
 from app.core.database import get_db
-from app.models.quarterly_declaration import QuarterlyDeclaration
 from app.models.user import User
 from app.models.verification_audit import VerificationAudit
 from app.schemas.audit import AnomalyResult, AuditCreate, AuditRead
@@ -17,6 +15,16 @@ from app.schemas.quantity import QuantityRead, QuantitySubmit
 from app.services import anomaly_service, declaration_service, payment_service
 
 router = APIRouter(prefix="/declarations", tags=["declarations"])
+
+
+@router.get("/{declaration_id}", response_model=DeclarationRead)
+async def get_declaration(
+    declaration_id: int,
+    session: AsyncSession = Depends(get_db),
+    _: User = Depends(require_role(["admin", "facility_user", "verifier", "auditor"])),
+) -> DeclarationRead:
+    declaration = await declaration_service.get_declaration(session, declaration_id)
+    return DeclarationRead.model_validate(declaration)
 
 
 @router.post("/", response_model=DeclarationRead, status_code=status.HTTP_201_CREATED)
@@ -61,7 +69,7 @@ async def verify_declaration(
             detail=f"Cannot verify a declaration with status '{declaration.status}'",
         )
     declaration.status = "verified"
-    declaration.verified_at = datetime.now(timezone.utc)
+    declaration.verified_at = datetime.now(UTC)
     await session.flush()
     await session.refresh(declaration)
     return DeclarationRead.model_validate(declaration)
